@@ -111,16 +111,16 @@ tY=1:1:length(YTest);
 figure
 set(gcf,'color','w');
 subplot(2,1,1)
-plot(tY./(24),YTest)
+plot(tY,YTest)
 hold on
-plot(tY./(24),YPred,'.-')
+plot(tY,YPred,'.-')
 hold off
 legend(["Observed" "Predicted"])
-ylabel('gigawatts','Interpreter','Latex','FontSize', 16)
+ylabel('Matic Volume','Interpreter','Latex','FontSize', 16)
 title("Forecast with Updates")
 
 subplot(2,1,2)
-stem(tY./(24),YPred - YTest)
-ylabel('gigawatts','Interpreter','Latex','FontSize', 16)
+stem(tY,YPred - YTest)
+ylabel('Matic Volume','Interpreter','Latex','FontSize', 16)
 ylabel("Error")
 title("RMSE = " + rmse)
