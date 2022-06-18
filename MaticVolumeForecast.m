@@ -4,7 +4,7 @@ close all
 file=sprintf('datamatic.csv'); %we upload the data
 [timestamp,volume] = csvimport(file, 'columns', {'timestamp','volume'});
 % 
-Ts=1; %sampling period in minutes
+Ts=30; %sampling period in minutes
 % data=zeros(1,length(dataaux)/Ts);
 % %% Generate vector of information sampled every Ts minutes
 % j=1;
@@ -72,8 +72,8 @@ for i = 1:numTimeStepsTest
     [net,YPred(i)] = predictAndUpdateState(net,XTest(i),'ExecutionEnvironment','cpu');
     XTrain(1)=[];
     XTrain(end+1)=YPred(i);
-    [pdf(i+1,:),xi(i+1,:)]  = ksdensity(XTrain(end-24:end));
-    plot3(i*ones(1,100)./24,xi(i,:),pdf(i,:),'color',[0.4 0.6 0.7])
+    [pdf(i+1,:),xi(i+1,:)]  = ksdensity(XTrain(end-30:end));
+    plot3(i*ones(1,100)./30,xi(i,:),pdf(i,:),'color',[0.4 0.6 0.7])
     for j=1:length(pdf(i,:))
         Energy(i)=Energy(i)+4*sqrt(pdf(i,j))*((sqrt(pdf(i+1,j))-sqrt(pdf(i,j)))^2)/(Ts^2); %equation (3.7)
     end
@@ -93,14 +93,14 @@ for i=2:length(Energy)
 end
 subplot(2,1,1)
 tE=1:1:length(Energy);
-    plot(tE./(24),Energy,'r','LineWidth',2);
-        xlabel('Days','Interpreter','Latex','FontSize', 10)
+    plot(tE./30,Energy,'r','LineWidth',2);
+        xlabel('months','Interpreter','Latex','FontSize', 10)
         ylabel('$\mathcal{E}$ (Information velocity)','Interpreter','Latex','FontSize', 10)
     grid on
 subplot(2,1,2)
 tL=1:1:length(IL);
-    plot(tL./(24),IL,'r','LineWidth',2);
-    xlabel('Days','Interpreter','Latex','FontSize', 10)
+    plot(tL./30,IL,'r','LineWidth',2);
+    xlabel('months','Interpreter','Latex','FontSize', 10)
     ylabel('$\mathcal{L}$ (Information length)','Interpreter','Latex','FontSize', 10)
     grid on
 
@@ -116,11 +116,13 @@ hold on
 plot(tY,YPred,'.-')
 hold off
 legend(["Observed" "Predicted"])
+xlabel('days','Interpreter','Latex','FontSize', 10)
 ylabel('Matic Volume','Interpreter','Latex','FontSize', 16)
 title("Forecast with Updates")
 
 subplot(2,1,2)
 stem(tY,YPred - YTest)
+xlabel('days','Interpreter','Latex','FontSize', 10)
 ylabel('Matic Volume','Interpreter','Latex','FontSize', 16)
 ylabel("Error")
 title("RMSE = " + rmse)
